@@ -5,6 +5,8 @@ import com.kais.rag_chat.dto.request.RenameSessionRequest;
 import com.kais.rag_chat.dto.response.ChatSessionResponse;
 import com.kais.rag_chat.mapper.ChatSessionMapper;
 import com.kais.rag_chat.service.ChatSessionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,11 +19,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/sessions")
 @RequiredArgsConstructor
+@Tag(name = "Sessions", description = "Manage chat sessions — create, retrieve, rename, favorite, and delete")
 public class ChatSessionController {
 
     private final ChatSessionService service;
     private final ChatSessionMapper mapper;
 
+    @Operation(summary = "Create a new chat session")
     @PostMapping
     public ResponseEntity<ChatSessionResponse> create(
             @RequestHeader("X-User-Id") String userId,
@@ -30,18 +34,21 @@ public class ChatSessionController {
                 .body(mapper.toResponse(service.createSession(userId, request.getTitle())));
     }
 
+    @Operation(summary = "Get all sessions for the authenticated user, ordered by most recently updated")
     @GetMapping
     public ResponseEntity<List<ChatSessionResponse>> getAll(
             @RequestHeader("X-User-Id") String userId) {
         return ResponseEntity.ok(mapper.toResponseList(service.getSessionsByUser(userId)));
     }
 
+    @Operation(summary = "Get all sessions marked as favorite")
     @GetMapping("/favorites")
     public ResponseEntity<List<ChatSessionResponse>> getFavorites(
             @RequestHeader("X-User-Id") String userId) {
         return ResponseEntity.ok(mapper.toResponseList(service.getFavoriteSessionsByUser(userId)));
     }
 
+    @Operation(summary = "Get a session by its ID")
     @GetMapping("/{sessionId}")
     public ResponseEntity<ChatSessionResponse> getById(
             @RequestHeader("X-User-Id") String userId,
@@ -49,6 +56,7 @@ public class ChatSessionController {
         return ResponseEntity.ok(mapper.toResponse(service.getSessionByIdAndUser(sessionId, userId)));
     }
 
+    @Operation(summary = "Rename a chat session")
     @PatchMapping("/{sessionId}/rename")
     public ResponseEntity<ChatSessionResponse> rename(
             @RequestHeader("X-User-Id") String userId,
@@ -57,6 +65,7 @@ public class ChatSessionController {
         return ResponseEntity.ok(mapper.toResponse(service.renameSession(sessionId, userId, request.getTitle())));
     }
 
+    @Operation(summary = "Toggle the favorite status of a session")
     @PatchMapping("/{sessionId}/favorite")
     public ResponseEntity<ChatSessionResponse> toggleFavorite(
             @RequestHeader("X-User-Id") String userId,
@@ -64,6 +73,7 @@ public class ChatSessionController {
         return ResponseEntity.ok(mapper.toResponse(service.toggleFavorite(sessionId, userId)));
     }
 
+    @Operation(summary = "Delete a session and all its associated messages")
     @DeleteMapping("/{sessionId}")
     public ResponseEntity<Void> delete(
             @RequestHeader("X-User-Id") String userId,
