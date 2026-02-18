@@ -12,6 +12,7 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -57,6 +58,11 @@ public class GlobalExceptionHandler {
         String msg = String.format("Invalid value '%s' for parameter '%s'", ex.getValue(), ex.getName());
         log.warn("Type mismatch on {} {}: {}", request.getMethod(), request.getRequestURI(), msg);
         return build(HttpStatus.BAD_REQUEST, msg, request, null);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest request) {
+        return build(HttpStatus.NOT_FOUND, "Resource not found: " + request.getRequestURI(), request, null);
     }
 
     @ExceptionHandler(Exception.class)
