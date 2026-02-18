@@ -5,9 +5,11 @@ import com.kais.rag_chat.entity.ChatSession;
 import com.kais.rag_chat.entity.Sender;
 import com.kais.rag_chat.repository.ChatMessageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,8 +30,9 @@ public class ChatMessageService {
         return chatMessageRepository.save(message);
     }
 
-    public List<ChatMessage> getMessagesBySession(UUID sessionId, String userId) {
+    public Page<ChatMessage> getMessagesBySession(UUID sessionId, String userId, int page, int size) {
         chatSessionService.getSessionByIdAndUser(sessionId, userId);
-        return chatMessageRepository.findBySessionIdOrderByCreatedAtAsc(sessionId);
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").ascending());
+        return chatMessageRepository.findBySessionIdOrderByCreatedAtAsc(sessionId, pageable);
     }
 }

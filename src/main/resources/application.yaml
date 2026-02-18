@@ -18,6 +18,12 @@ spring:
 
 app:
   api-key: ${API_KEY:2d4ac50ee70a28beb45ad9e4417c76abd35de414e073615ec0e6661387b13636}
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:3000}
+  rate-limit:
+    capacity: ${RATE_LIMIT_CAPACITY:3}
+    refill-tokens: ${RATE_LIMIT_REFILL_TOKENS:3}
+    refill-minutes: ${RATE_LIMIT_REFILL_MINUTES:1}
 
 springdoc:
   swagger-ui:

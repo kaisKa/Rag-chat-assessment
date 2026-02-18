@@ -33,3 +33,6 @@ build/
 
 ### Environment ###
 .env
+
+### Logs ###
+logs/

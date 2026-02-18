@@ -1,6 +1,7 @@
 package com.kais.rag_chat.service;
 
 import com.kais.rag_chat.entity.ChatSession;
+import com.kais.rag_chat.exception.SessionNotFoundException;
 import com.kais.rag_chat.repository.ChatSessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class ChatSessionService {
 
     public ChatSession getSessionByIdAndUser(UUID sessionId, String userId) {
         return chatSessionRepository.findByIdAndUserId(sessionId, userId)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
+                .orElseThrow(() -> new SessionNotFoundException(sessionId));
     }
 
     public ChatSession renameSession(UUID sessionId, String userId, String newTitle) {
