@@ -82,15 +82,17 @@ cp .env.example .env
 docker-compose up --build
 ```
 
-This starts three services:
+This builds the Spring Boot app image and starts three containers:
 
-| Service | URL |
-|---|---|
-| **Spring Boot App** | `http://localhost:8080` |
-| **pgAdmin** | `http://localhost:5050` |
-| **PostgreSQL** | `localhost:5432` |
+| Service | URL | Description |
+|---|---|---|
+| **Spring Boot App** | `http://localhost:8080` | The microservice |
+| **pgAdmin** | `http://localhost:5050` | Database management UI |
+| **PostgreSQL** | `localhost:5432` | Database |
 
 pgAdmin credentials: `admin@example.com` / `admin`
+
+> **Note:** Inside Docker, the app connects to PostgreSQL using the service name `postgres` — this is handled automatically by docker-compose. The `DB_URL` in your `.env` file (`localhost:5432`) is only used when running locally.
 
 To stop:
 ```bash
